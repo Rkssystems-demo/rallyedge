@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RallyMind — State Demo: Empty · Normal · Full</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@700;800&display=swap');
+
+:root {
+  --g900:#0d3320; --g800:#1b5230; --g700:#2a7a4b; --g600:#3daf6e;
+  --g100:#e8f5ee; --g50:#f2faf5;
+  --red:#c62828; --red-bg:#fce4ec;
+  --orange:#d4581a; --orange-bg:#fff0e6;
+  --gold:#e6a817; --gold-bg:#fff8e1;
+  --blue:#1565c0; --blue-bg:#e3f2fd;
+  --purple:#6a1b9a; --purple-bg:#f3e5f5;
+  --navy:#1b2d45; --text:#1b2d45; --text-mid:#4a5568;
+  --text-lt:#7a8fa6; --divider:#e4eaf0;
+  --surface:#f5f7fa; --white:#ffffff;
+  --sh-sm:0 1px 4px rgba(0,0,0,0.08);
+  --sh-md:0 4px 16px rgba(0,0,0,0.10);
+  --r-xs:6px; --r-sm:10px; --r-md:16px; --r-lg:22px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#6b7f95;
+  min-height:100vh;
+  padding:28px 24px 80px;
+}
+
+/* PAGE HEADER */
+.page-header{text-align:center;margin-bottom:32px;}
+.page-header h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:800;color:white;margin-bottom:6px;}
+.page-header p{font-size:12px;color:rgba(255,255,255,0.55);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;}
+
+/* DEMO ROW */
+.demo-row{
+  display:flex;gap:32px;justify-content:center;align-items:flex-start;
+  flex-wrap:wrap;
+}
+
+/* PHONE COLUMN */
+.phone-col{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.screen-label{font-size:11px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:2px;}
+
+/* STATE SWITCHER */
+.state-switcher{display:flex;gap:4px;background:rgba(0,0,0,0.25);padding:4px;border-radius:10px;}
+.state-btn{padding:5px 14px;border-radius:7px;border:none;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;color:rgba(255,255,255,0.5);background:transparent;transition:all 0.18s;letter-spacing:0.04em;}
+.state-btn.active{background:white;color:var(--navy);}
+
+/* DENSITY TOGGLE (Journal only) */
+.density-row{display:flex;gap:6px;align-items:center;}
+.density-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,0.45);letter-spacing:0.08em;text-transform:uppercase;}
+.density-btn{padding:4px 10px;border-radius:6px;border:none;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;cursor:pointer;color:rgba(255,255,255,0.5);background:rgba(0,0,0,0.2);transition:all 0.15s;}
+.density-btn.active{background:white;color:var(--navy);}
+
+/* PHONE FRAME */
+.phone{
+  width:320px;height:693px;
+  background:var(--surface);border-radius:40px;
+  box-shadow:0 32px 72px rgba(0,0,0,0.45),0 0 0 8px #1c1c1e,0 0 0 10px #3a3a3c;
+  overflow:hidden;position:relative;display:flex;flex-direction:column;
+  flex-shrink:0;
+}
+.status-bar{background:var(--g800);padding:10px 20px 7px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.sb-time{font-size:11px;font-weight:700;color:white;}
+.sb-brand{font-size:12px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.06em;}
+.sb-icons{font-size:10px;color:rgba(255,255,255,0.7);}
+
+/* SCREENS */
+.demo-screen{display:none;flex-direction:column;flex:1;overflow:hidden;}
+.demo-screen.active{display:flex;}
+.scroll{overflow-y:auto;flex:1;}
+.scroll::-webkit-scrollbar{width:3px;}
+.scroll::-webkit-scrollbar-thumb{background:var(--divider);border-radius:2px;}
+
+/* PAGE HEADER IN PHONE */
+.page-hd{padding:12px 16px 0;flex-shrink:0;}
+.page-hd-row{display:flex;justify-content:space-between;align-items:center;}
+.page-hd-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;color:var(--text);}
+.page-hd-sub{font-size:10px;color:var(--text-lt);font-weight:500;margin-top:1px;}
+.fab{width:32px;height:32px;background:linear-gradient(135deg,var(--g700),var(--g800));color:white;border:none;border-radius:50%;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(42,122,75,0.35);}
+
+/* PILLS */
+.pills{display:flex;gap:6px;padding:8px 16px 6px;overflow-x:auto;flex-shrink:0;}
+.pills::-webkit-scrollbar{display:none;}
+.pill{padding:5px 12px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;cursor:pointer;background:var(--surface);border:1.5px solid var(--divider);color:var(--text-lt);transition:all 0.15s;flex-shrink:0;}
+.pill.on{background:var(--g700);color:white;border-color:var(--g700);}
+
+/* SEARCH BAR */
+.search-bar{margin:6px 16px;background:var(--surface);border:1.5px solid var(--divider);border-radius:var(--r-sm);padding:8px 12px;font-size:11px;color:var(--text-lt);font-weight:500;}
+
+/* SORT BAR */
+.sort-bar{padding:4px 16px 6px;font-size:9px;font-weight:600;color:var(--text-lt);display:flex;align-items:center;gap:4px;flex-shrink:0;}
+
+/* SECTION HEADER */
+.sec-hd{font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-lt);padding:10px 16px 5px;}
+
+/* TAGS */
+.tag{display:inline-block;padding:3px 8px;border-radius:12px;font-size:9px;font-weight:700;}
+.tag-match{background:#fce4ec;color:#c62828;}
+.tag-lesson{background:var(--blue-bg);color:var(--blue);}
+.tag-practice{background:var(--gold-bg);color:var(--gold);}
+.tag-tech{background:var(--g100);color:var(--g700);}
+.tag-strategy{background:var(--blue-bg);color:var(--blue);}
+.tag-mental{background:var(--gold-bg);color:var(--gold);}
+.tag-str{background:var(--g100);color:var(--g700);}
+.tag-wk{background:var(--red-bg);color:var(--red);}
+
+/* ─────────────────────────────────────
+   JOURNAL CARDS
+───────────────────────────────────── */
+.j-entry{background:white;border-radius:var(--r-sm);padding:10px 12px;margin:0 16px 8px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border-left:3px solid transparent;cursor:pointer;}
+.j-entry.m{border-color:var(--g700);}
+.j-entry.l{border-color:var(--blue);}
+.j-entry.p{border-color:var(--gold);}
+.j-entry.s{border-color:var(--gold);background:var(--gold-bg);}
+.je-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.je-date{font-size:9px;color:var(--text-lt);font-weight:600;}
+.je-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.je-meta{font-size:9px;color:var(--text-lt);font-weight:500;margin-bottom:5px;line-height:1.4;}
+.je-bottom{display:flex;justify-content:space-between;align-items:center;}
+.stars{font-size:9px;letter-spacing:1px;}
+.je-score{font-size:10px;font-weight:700;color:var(--g700);}
+.je-score.l{color:var(--orange);}
+
+/* COMPACT JOURNAL ROW */
+.jc-row{display:flex;align-items:center;gap:8px;padding:7px 16px;border-bottom:1px solid var(--divider);cursor:pointer;}
+.jc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.jc-dot.m{background:var(--g700);}
+.jc-dot.l{background:var(--blue);}
+.jc-dot.p{background:var(--gold);}
+.jc-dot.s{background:var(--orange);}
+.jc-title{font-size:11px;font-weight:600;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.jc-right{display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex-shrink:0;}
+.jc-date{font-size:9px;color:var(--text-lt);font-weight:500;}
+.jc-result{font-size:9px;font-weight:700;color:var(--g700);}
+.jc-result.l{color:var(--orange);}
+
+/* MONTH DIVIDER */
+.month-divider{padding:6px 16px 3px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.12em;color:var(--text-lt);background:var(--surface);position:sticky;top:0;z-index:1;}
+
+/* ─────────────────────────────────────
+   SCOUT / OPPONENT CARDS
+───────────────────────────────────── */
+.opp-card{background:white;border-radius:var(--r-sm);padding:11px 12px;margin:0 16px 8px;box-shadow:0 1px 4px rgba(0,0,0,0.06);cursor:pointer;}
+.opp-hd{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
+.opp-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:white;flex-shrink:0;}
+.opp-name{font-size:12px;font-weight:700;color:var(--text);}
+.opp-sub{font-size:9px;color:var(--text-lt);font-weight:500;}
+.opp-record{margin-left:auto;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;}
+.opp-record.win{background:var(--g100);color:var(--g700);}
+.opp-record.loss{background:var(--red-bg);color:var(--red);}
+.opp-record.even{background:var(--gold-bg);color:var(--gold);}
+.opp-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+.opp-gameplan{font-size:9px;color:var(--text-lt);line-height:1.5;font-style:italic;}
+
+/* COMPACT SCOUT ROW */
+.scout-row{display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid var(--divider);cursor:pointer;}
+.sr-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:white;flex-shrink:0;}
+.sr-name{font-size:11px;font-weight:700;color:var(--text);flex:1;}
+.sr-sub{font-size:9px;color:var(--text-lt);}
+.sr-record{font-size:10px;font-weight:800;}
+.sr-record.win{color:var(--g700);}
+.sr-record.loss{color:var(--red);}
+
+/* ─────────────────────────────────────
+   GOALS CARDS
+───────────────────────────────────── */
+.goal-card{background:white;border-radius:var(--r-sm);padding:11px 12px;margin:0 16px 8px;box-shadow:0 1px 4px rgba(0,0,0,0.06);cursor:pointer;}
+.gc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;gap:6px;}
+.gc-title{font-size:12px;font-weight:700;color:var(--text);flex:1;}
+.gc-desc{font-size:10px;color:var(--text-lt);line-height:1.5;margin-bottom:7px;}
+.prog-wrap{height:4px;background:var(--divider);border-radius:2px;overflow:hidden;margin-bottom:4px;}
+.prog-fill{height:100%;border-radius:2px;transition:width 0.4s ease;}
+.gc-pct{font-size:9px;font-weight:700;color:var(--g700);}
+.challenge-card{background:var(--orange-bg);border-radius:var(--r-sm);padding:10px 12px;margin:0 16px 8px;cursor:pointer;border-left:3px solid var(--orange);}
+.cc-title{font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.cc-ai{font-size:9px;color:var(--text-lt);line-height:1.5;font-style:italic;}
+
+/* COMPLETED GOAL ROW */
+.completed-goal{display:flex;align-items:center;gap:8px;padding:7px 16px;border-bottom:1px solid var(--divider);cursor:pointer;}
+.cg-check{width:16px;height:16px;border-radius:50%;background:var(--g100);border:1.5px solid var(--g700);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--g700);flex-shrink:0;}
+.cg-title{font-size:11px;font-weight:600;color:var(--text-lt);text-decoration:line-through;flex:1;}
+.cg-date{font-size:9px;color:var(--text-lt);font-weight:500;}
+
+/* ─────────────────────────────────────
+   GEAR CARDS
+───────────────────────────────────── */
+.gear-card{background:white;border-radius:var(--r-sm);padding:10px 12px;margin:0 16px 8px;box-shadow:0 1px 4px rgba(0,0,0,0.06);display:flex;gap:10px;align-items:center;cursor:pointer;}
+.gear-ico-wrap{width:36px;height:36px;border-radius:var(--r-xs);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.gear-name{font-size:12px;font-weight:700;color:var(--text);}
+.gear-sub{font-size:9px;color:var(--text-lt);font-weight:500;margin-bottom:4px;}
+.gear-specs{display:flex;flex-wrap:wrap;gap:4px;}
+.spec{font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--surface);color:var(--text-lt);}
+.spec.main{background:var(--g100);color:var(--g700);}
+.spec.hi{background:var(--blue-bg);color:var(--blue);}
+
+/* ─────────────────────────────────────
+   EMPTY STATE
+───────────────────────────────────── */
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:36px 24px;text-align:center;flex:1;
+}
+.es-icon{font-size:44px;margin-bottom:14px;opacity:0.35;}
+.es-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:7px;}
+.es-sub{font-size:11px;color:var(--text-lt);font-weight:500;line-height:1.6;margin-bottom:20px;max-width:220px;}
+.es-cta{padding:11px 22px;background:var(--g700);color:white;border:none;border-radius:var(--r-md);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(42,122,75,0.28);}
+.es-sec{font-size:10px;color:var(--text-lt);font-weight:500;margin-top:10px;}
+
+/* ─────────────────────────────────────
+   SCHEDULED BAR
+───────────────────────────────────── */
+.scheduled-bar{background:linear-gradient(135deg,var(--gold-bg),#fff8d0);border:1px solid #f0d85a;border-radius:var(--r-sm);padding:9px 12px;margin:6px 16px 2px;display:flex;align-items:center;gap:9px;cursor:pointer;}
+.sb-ico{font-size:18px;flex-shrink:0;}
+.sb-eyebrow{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--gold);margin-bottom:1px;}
+.sb-title{font-size:11px;font-weight:700;color:var(--text);}
+.sb-sub{font-size:9px;color:var(--text-lt);font-weight:500;}
+.sb-arrow{margin-left:auto;color:var(--text-lt);font-size:16px;}
+
+/* DASH ADD */
+.dash-add{margin:4px 16px 10px;padding:10px;border-radius:var(--r-sm);border:1.5px dashed var(--divider);text-align:center;font-size:11px;font-weight:700;color:var(--text-lt);cursor:pointer;}
+
+/* NAV */
+.nav{display:flex;background:white;border-top:1px solid var(--divider);flex-shrink:0;padding:4px 0 8px;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border:none;background:none;cursor:pointer;padding:5px 0;}
+.nav-ico{font-size:18px;}
+.nav-lbl{font-size:8px;font-weight:700;color:var(--text-lt);letter-spacing:0.04em;}
+.nav-btn.active .nav-lbl{color:var(--g700);}
+.nav-btn.active .nav-ico{filter:none;}
+
+/* PROGRESS RING for Goals full state */
+.goal-ring-row{display:flex;align-items:center;gap:10px;padding:8px 16px;background:var(--g100);margin:0 16px 8px;border-radius:var(--r-sm);}
+.goal-ring-stat{text-align:center;}
+.goal-ring-num{font-size:20px;font-weight:800;color:var(--g700);}
+.goal-ring-lbl{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-lt);}
+.goal-ring-divider{width:1px;height:36px;background:var(--divider);}
+
+/* SECTION COLLAPSE BUTTON */
+.sec-hd-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px 5px;}
+.sec-hd-txt{font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-lt);}
+.sec-collapse{font-size:10px;font-weight:700;color:var(--g700);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>RallyMind — Screen States</h1>
+  <p>Empty · Normal · Full &nbsp;·&nbsp; Tap state buttons to switch views</p>
+</div>
+
+<div class="demo-row">
+
+  <!-- ═══════════════════════════════════════════
+       JOURNAL PHONE
+  ═══════════════════════════════════════════ -->
+  <div class="phone-col">
+    <div class="screen-label">Journal</div>
+    <div class="state-switcher" id="jSwitcher">
+      <button class="state-btn" onclick="setState('j','empty',this)">Empty</button>
+      <button class="state-btn active" onclick="setState('j','normal',this)">Normal</button>
+      <button class="state-btn" onclick="setState('j','full',this)">Full</button>
+    </div>
+    <div class="density-row" id="jDensityRow" style="display:none;">
+      <span class="density-lbl">Density:</span>
+      <button class="density-btn active" id="jDensity-mid" onclick="setDensity('mid',this)">Card</button>
+      <button class="density-btn" id="jDensity-compact" onclick="setDensity('compact',this)">Compact</button>
+    </div>
+    <div class="phone">
+      <div class="status-bar">
+        <span class="sb-time">9:41</span>
+        <span class="sb-brand">RALLYMIND</span>
+        <span class="sb-icons">🔋</span>
+      </div>
+
+      <!-- JOURNAL EMPTY -->
+      <div class="demo-screen" id="j-empty">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Journal</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="empty-state">
+          <div class="es-icon">📓</div>
+          <div class="es-title">No entries yet</div>
+          <div class="es-sub">Log your first match, lesson, or practice session to start tracking your game and progress.</div>
+          <button class="es-cta">+ Log Your First Session</button>
+          <div class="es-sec">Matches · Lessons · Practices all in one place</div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn active"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+
+      <!-- JOURNAL NORMAL -->
+      <div class="demo-screen active" id="j-normal">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Journal</div><div class="page-hd-sub">5 entries · Feb 2026</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="pills">
+          <div class="pill on">All</div><div class="pill">Match</div><div class="pill">Lesson</div><div class="pill">Practice</div><div class="pill">Scheduled</div>
+        </div>
+        <div class="sort-bar">↓ Most recent first</div>
+        <div class="scroll">
+          <div class="scheduled-bar">
+            <div class="sb-ico">📅</div>
+            <div><div class="sb-eyebrow">Scheduled · Mar 5</div><div class="sb-title">vs. Lisa M. &amp; Dana R.</div><div class="sb-sub">Bayshore TC · 2:00 PM</div></div>
+            <div class="sb-arrow">›</div>
+          </div>
+          <div class="j-entry m">
+            <div class="je-top"><span class="tag tag-match">Match</span><span class="je-date">Feb 22</span></div>
+            <div class="je-title">vs. Karen T. &amp; Sarah M.</div>
+            <div class="je-meta">Bayshore TC · Doubles · League · 1h 45m</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐⭐</div><div class="je-score">Win 6–4, 7–5</div></div>
+          </div>
+          <div class="j-entry l">
+            <div class="je-top"><span class="tag tag-lesson">Lesson</span><span class="je-date">Feb 18</span></div>
+            <div class="je-title">Lesson with Coach Danny</div>
+            <div class="je-meta">1h 30m · Backhand, return of serve</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐⭐</div><div class="je-score" style="color:var(--blue);">3 tips logged</div></div>
+          </div>
+          <div class="j-entry p">
+            <div class="je-top"><span class="tag tag-practice">Practice</span><span class="je-date">Feb 15</span></div>
+            <div class="je-title">Baseline Drills · Singles</div>
+            <div class="je-meta">2h · Bayshore TC · Hard Court</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐</div><div class="je-score">Session logged</div></div>
+          </div>
+          <div class="j-entry m">
+            <div class="je-top"><span class="tag tag-match">Match</span><span class="je-date">Feb 10</span></div>
+            <div class="je-title">vs. Michelle K. &amp; Tanya R.</div>
+            <div class="je-meta">Doubles · League · 1h 55m</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐</div><div class="je-score l">Loss 4–6, 5–7</div></div>
+          </div>
+          <div class="dash-add">+ Log New Entry</div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn active"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+
+      <!-- JOURNAL FULL (card view default, compact toggle) -->
+      <div class="demo-screen" id="j-full">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Journal</div><div class="page-hd-sub">38 entries · 7 months</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="pills">
+          <div class="pill on">All</div><div class="pill">Match</div><div class="pill">Lesson</div><div class="pill">Practice</div><div class="pill">Scheduled</div>
+        </div>
+        <div class="sort-bar">↓ Most recent first · 38 entries</div>
+
+        <!-- CARD DENSITY VIEW -->
+        <div class="scroll" id="j-full-card">
+          <div class="scheduled-bar">
+            <div class="sb-ico">📅</div>
+            <div><div class="sb-eyebrow">Scheduled · Mar 5</div><div class="sb-title">vs. Lisa M. &amp; Dana R.</div><div class="sb-sub">Bayshore TC · 2:00 PM</div></div>
+            <div class="sb-arrow">›</div>
+          </div>
+          <div class="month-divider">February 2026</div>
+          <div class="j-entry m">
+            <div class="je-top"><span class="tag tag-match">Match</span><span class="je-date">Feb 22</span></div>
+            <div class="je-title">vs. Karen T. &amp; Sarah M.</div>
+            <div class="je-meta">Bayshore TC · Doubles · League · 1h 45m</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐⭐</div><div class="je-score">Win 6–4, 7–5</div></div>
+          </div>
+          <div class="j-entry l">
+            <div class="je-top"><span class="tag tag-lesson">Lesson</span><span class="je-date">Feb 18</span></div>
+            <div class="je-title">Coach Danny · Backhand &amp; Return</div>
+            <div class="je-meta">1h 30m · 3 tips logged</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐⭐</div><div class="je-score" style="color:var(--blue);">Lesson</div></div>
+          </div>
+          <div class="j-entry p">
+            <div class="je-top"><span class="tag tag-practice">Practice</span><span class="je-date">Feb 15</span></div>
+            <div class="je-title">Baseline Drills</div>
+            <div class="je-meta">2h · Bayshore TC</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐</div><div class="je-score">Practice</div></div>
+          </div>
+          <div class="j-entry m">
+            <div class="je-top"><span class="tag tag-match">Match</span><span class="je-date">Feb 10</span></div>
+            <div class="je-title">vs. Michelle K. &amp; Tanya R.</div>
+            <div class="je-meta">Doubles · League · 1h 55m</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐</div><div class="je-score l">Loss 4–6, 5–7</div></div>
+          </div>
+          <div class="j-entry p">
+            <div class="je-top"><span class="tag tag-practice">Practice</span><span class="je-date">Feb 5</span></div>
+            <div class="je-title">Net Game Drills</div>
+            <div class="je-meta">1h 15m · Club Courts</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐</div><div class="je-score">Practice</div></div>
+          </div>
+          <div class="month-divider">January 2026</div>
+          <div class="j-entry m">
+            <div class="je-top"><span class="tag tag-match">Match</span><span class="je-date">Jan 28</span></div>
+            <div class="je-title">vs. Dana R. &amp; Lisa M.</div>
+            <div class="je-meta">Doubles · Friendly · 1h 30m</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐</div><div class="je-score">Win 7–5, 6–4</div></div>
+          </div>
+          <div class="j-entry l">
+            <div class="je-top"><span class="tag tag-lesson">Lesson</span><span class="je-date">Jan 22</span></div>
+            <div class="je-title">Coach Danny · Serve Toss</div>
+            <div class="je-meta">1h · 4 tips logged</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐⭐</div><div class="je-score" style="color:var(--blue);">Lesson</div></div>
+          </div>
+          <div class="j-entry m">
+            <div class="je-top"><span class="tag tag-match">Match</span><span class="je-date">Jan 15</span></div>
+            <div class="je-title">vs. Sarah K. &amp; Meg T.</div>
+            <div class="je-meta">Doubles · League · 2h 5m</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐</div><div class="je-score">Win 6–3, 7–6</div></div>
+          </div>
+          <div class="j-entry p">
+            <div class="je-top"><span class="tag tag-practice">Practice</span><span class="je-date">Jan 10</span></div>
+            <div class="je-title">Cardio + Footwork</div>
+            <div class="je-meta">1h · Club Courts</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐</div><div class="je-score">Practice</div></div>
+          </div>
+          <div class="month-divider">December 2025</div>
+          <div class="j-entry m">
+            <div class="je-top"><span class="tag tag-match">Match</span><span class="je-date">Dec 18</span></div>
+            <div class="je-title">vs. Tanya R. &amp; Kim S.</div>
+            <div class="je-meta">Doubles · League · 1h 50m</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐</div><div class="je-score l">Loss 5–7, 4–6</div></div>
+          </div>
+          <div class="j-entry l">
+            <div class="je-top"><span class="tag tag-lesson">Lesson</span><span class="je-date">Dec 10</span></div>
+            <div class="je-title">Coach Danny · Footwork</div>
+            <div class="je-meta">1h 30m · 2 tips logged</div>
+            <div class="je-bottom"><div class="stars">⭐⭐⭐⭐</div><div class="je-score" style="color:var(--blue);">Lesson</div></div>
+          </div>
+          <div style="height:10px;"></div>
+        </div>
+
+        <!-- COMPACT DENSITY VIEW (hidden by default) -->
+        <div style="display:none;flex:1;overflow-y:auto;" id="j-full-compact">
+          <div class="month-divider">March 2026</div>
+          <div class="jc-row s"><div class="jc-dot s"></div><div class="jc-title">📅 vs. Lisa M. &amp; Dana R.</div><div class="jc-right"><div class="jc-date">Mar 5</div><div class="jc-result" style="color:var(--gold);">Scheduled</div></div></div>
+          <div class="month-divider">February 2026</div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Karen T. &amp; Sarah M.</div><div class="jc-right"><div class="jc-date">Feb 22</div><div class="jc-result">W 6–4, 7–5</div></div></div>
+          <div class="jc-row"><div class="jc-dot l"></div><div class="jc-title">Coach Danny · Backhand</div><div class="jc-right"><div class="jc-date">Feb 18</div><div class="jc-result" style="color:var(--blue);">Lesson</div></div></div>
+          <div class="jc-row"><div class="jc-dot p"></div><div class="jc-title">Baseline Drills</div><div class="jc-right"><div class="jc-date">Feb 15</div><div class="jc-result" style="color:var(--gold);">Practice</div></div></div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Michelle K. &amp; Tanya R.</div><div class="jc-right"><div class="jc-date">Feb 10</div><div class="jc-result l">L 4–6, 5–7</div></div></div>
+          <div class="jc-row"><div class="jc-dot p"></div><div class="jc-title">Net Game Drills</div><div class="jc-right"><div class="jc-date">Feb 5</div><div class="jc-result" style="color:var(--gold);">Practice</div></div></div>
+          <div class="month-divider">January 2026</div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Dana R. &amp; Lisa M.</div><div class="jc-right"><div class="jc-date">Jan 28</div><div class="jc-result">W 7–5, 6–4</div></div></div>
+          <div class="jc-row"><div class="jc-dot l"></div><div class="jc-title">Coach Danny · Serve Toss</div><div class="jc-right"><div class="jc-date">Jan 22</div><div class="jc-result" style="color:var(--blue);">Lesson</div></div></div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Sarah K. &amp; Meg T.</div><div class="jc-right"><div class="jc-date">Jan 15</div><div class="jc-result">W 6–3, 7–6</div></div></div>
+          <div class="jc-row"><div class="jc-dot p"></div><div class="jc-title">Cardio + Footwork</div><div class="jc-right"><div class="jc-date">Jan 10</div><div class="jc-result" style="color:var(--gold);">Practice</div></div></div>
+          <div class="month-divider">December 2025</div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Tanya R. &amp; Kim S.</div><div class="jc-right"><div class="jc-date">Dec 18</div><div class="jc-result l">L 5–7, 4–6</div></div></div>
+          <div class="jc-row"><div class="jc-dot l"></div><div class="jc-title">Coach Danny · Footwork</div><div class="jc-right"><div class="jc-date">Dec 10</div><div class="jc-result" style="color:var(--blue);">Lesson</div></div></div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Rachel P. &amp; Amy V.</div><div class="jc-right"><div class="jc-date">Dec 5</div><div class="jc-result">W 6–2, 6–4</div></div></div>
+          <div class="jc-row"><div class="jc-dot p"></div><div class="jc-title">Serve Practice</div><div class="jc-right"><div class="jc-date">Dec 1</div><div class="jc-result" style="color:var(--gold);">Practice</div></div></div>
+          <div class="month-divider">November 2025</div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Kim S. &amp; Beth D.</div><div class="jc-right"><div class="jc-date">Nov 22</div><div class="jc-result l">L 3–6, 6–7</div></div></div>
+          <div class="jc-row"><div class="jc-dot l"></div><div class="jc-title">Coach Danny · Volleys</div><div class="jc-right"><div class="jc-date">Nov 14</div><div class="jc-result" style="color:var(--blue);">Lesson</div></div></div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Dana R. &amp; Cora M.</div><div class="jc-right"><div class="jc-date">Nov 8</div><div class="jc-result">W 6–4, 6–3</div></div></div>
+          <div class="jc-row"><div class="jc-dot p"></div><div class="jc-title">Match Prep Drills</div><div class="jc-right"><div class="jc-date">Nov 2</div><div class="jc-result" style="color:var(--gold);">Practice</div></div></div>
+          <div class="month-divider">October 2025</div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Jenny H. &amp; Sue R.</div><div class="jc-right"><div class="jc-date">Oct 25</div><div class="jc-result">W 7–5, 6–4</div></div></div>
+          <div class="jc-row"><div class="jc-dot l"></div><div class="jc-title">Coach Danny · Topspin</div><div class="jc-right"><div class="jc-date">Oct 18</div><div class="jc-result" style="color:var(--blue);">Lesson</div></div></div>
+          <div class="jc-row"><div class="jc-dot m"></div><div class="jc-title">vs. Michelle K. &amp; Pat R.</div><div class="jc-right"><div class="jc-date">Oct 11</div><div class="jc-result l">L 4–6, 3–6</div></div></div>
+          <div style="height:10px;"></div>
+        </div>
+
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn active"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+    </div><!-- /phone -->
+  </div><!-- /phone-col -->
+
+
+  <!-- ═══════════════════════════════════════════
+       SCOUT PHONE
+  ═══════════════════════════════════════════ -->
+  <div class="phone-col">
+    <div class="screen-label">Scout</div>
+    <div class="state-switcher" id="sSwitcher">
+      <button class="state-btn" onclick="setState('s','empty',this)">Empty</button>
+      <button class="state-btn active" onclick="setState('s','normal',this)">Normal</button>
+      <button class="state-btn" onclick="setState('s','full',this)">Full</button>
+    </div>
+    <div class="phone">
+      <div class="status-bar">
+        <span class="sb-time">9:41</span>
+        <span class="sb-brand">RALLYMIND</span>
+        <span class="sb-icons">🔋</span>
+      </div>
+
+      <!-- SCOUT EMPTY -->
+      <div class="demo-screen" id="s-empty">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Scout</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="empty-state">
+          <div class="es-icon">🕵️</div>
+          <div class="es-title">No opponents yet</div>
+          <div class="es-sub">Add opponents to get AI-powered strategy cards before every match. Know their strengths, weaknesses, and game plan before you step on the court.</div>
+          <button class="es-cta">+ Add First Opponent</button>
+          <div class="es-sec">AI game plans generated from your notes</div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+
+      <!-- SCOUT NORMAL -->
+      <div class="demo-screen active" id="s-normal">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Scout</div><div class="page-hd-sub">2 opponents tracked</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="search-bar">🔍 &nbsp;Search opponents…</div>
+        <div class="pills">
+          <div class="pill on">All</div><div class="pill">Net Player</div><div class="pill">Lefty</div><div class="pill">Weak BH</div>
+        </div>
+        <div class="scroll">
+          <div class="scheduled-bar">
+            <div class="sb-ico">📅</div>
+            <div><div class="sb-eyebrow">Next Match · Mar 5</div><div class="sb-title">Lisa M. &amp; Dana R.</div><div class="sb-sub">Tap for AI game plan</div></div>
+            <div class="sb-arrow">›</div>
+          </div>
+          <div class="sec-hd">Opponents</div>
+          <div class="opp-card">
+            <div class="opp-hd">
+              <div class="opp-avatar" style="background:linear-gradient(135deg,#d4581a,#9a3010);">KT</div>
+              <div><div class="opp-name">Karen T.</div><div class="opp-sub">3 matches · Hard Court</div></div>
+              <div class="opp-record win">2W – 1L</div>
+            </div>
+            <div class="opp-tags"><span class="tag tag-str">Strong Serve</span><span class="tag tag-str">Net Player</span><span class="tag tag-wk">Weak BH</span></div>
+            <div class="opp-gameplan">Attack backhand with topspin. Lob when she nets — overhead cracks under pressure.</div>
+          </div>
+          <div class="opp-card">
+            <div class="opp-hd">
+              <div class="opp-avatar" style="background:linear-gradient(135deg,#1565c0,#0d3a7a);">MK</div>
+              <div><div class="opp-name">Michelle K.</div><div class="opp-sub">2 matches · Hard Court</div></div>
+              <div class="opp-record loss">0W – 2L</div>
+            </div>
+            <div class="opp-tags"><span class="tag tag-str">Consistent</span><span class="tag tag-wk">Mental Swings</span><span class="tag tag-wk">Weak Overhead</span></div>
+            <div class="opp-gameplan">Lob constantly. Push on her mental momentum when she starts missing.</div>
+          </div>
+          <div class="dash-add">+ Add New Opponent</div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+
+      <!-- SCOUT FULL -->
+      <div class="demo-screen" id="s-full">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Scout</div><div class="page-hd-sub">11 opponents · 28 matches</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="search-bar">🔍 &nbsp;Search opponents…</div>
+        <div class="pills">
+          <div class="pill on">All</div><div class="pill">Net Player</div><div class="pill">Lefty</div><div class="pill">Weak BH</div><div class="pill">Strong Serve</div>
+        </div>
+        <div class="scroll">
+          <div class="scheduled-bar">
+            <div class="sb-ico">📅</div>
+            <div><div class="sb-eyebrow">Next Match · Mar 5</div><div class="sb-title">Lisa M. &amp; Dana R.</div><div class="sb-sub">Tap for AI game plan</div></div>
+            <div class="sb-arrow">›</div>
+          </div>
+          <div class="sec-hd">Upcoming Opponent</div>
+          <div class="opp-card" style="border:1.5px solid var(--gold);background:var(--gold-bg);">
+            <div class="opp-hd">
+              <div class="opp-avatar" style="background:linear-gradient(135deg,#e6a817,#c09010);">LM</div>
+              <div><div class="opp-name">Lisa M.</div><div class="opp-sub">1 match · Hard Court · Doubles</div></div>
+              <div class="opp-record even">0W – 1L</div>
+            </div>
+            <div class="opp-tags"><span class="tag tag-str">Strong 1st Serve</span><span class="tag tag-str">Aggressive Net</span><span class="tag tag-wk">Weak Overhead</span></div>
+            <div class="opp-gameplan">Return deep cross-court. Attack overhead early. Stay back and make her play the extra ball.</div>
+          </div>
+          <div class="sec-hd">All Opponents</div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#d4581a,#9a3010);">KT</div>
+            <div><div class="sr-name">Karen T.</div><div class="sr-sub">3 matches · Righty · Net Player</div></div>
+            <div class="sr-record win">2W–1L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#1565c0,#0d3a7a);">MK</div>
+            <div><div class="sr-name">Michelle K.</div><div class="sr-sub">2 matches · Lefty · Consistent</div></div>
+            <div class="sr-record loss">0W–2L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#6a1b9a,#4a0e70);">TR</div>
+            <div><div class="sr-name">Tanya R.</div><div class="sr-sub">4 matches · Righty · Baseline</div></div>
+            <div class="sr-record win">3W–1L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#2a7a4b,#1b5230);">SM</div>
+            <div><div class="sr-name">Sarah M.</div><div class="sr-sub">2 matches · Righty · All-Court</div></div>
+            <div class="sr-record win">1W–1L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#c62828,#8b1a1a);">DR</div>
+            <div><div class="sr-name">Dana R.</div><div class="sr-sub">3 matches · Righty · Net Player</div></div>
+            <div class="sr-record loss">1W–2L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#e6a817,#c09010);">KS</div>
+            <div><div class="sr-name">Kim S.</div><div class="sr-sub">2 matches · Lefty · Baseline</div></div>
+            <div class="sr-record win">2W–0L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#4a1070,#2a0040);">RP</div>
+            <div><div class="sr-name">Rachel P.</div><div class="sr-sub">1 match · Righty · All-Court</div></div>
+            <div class="sr-record win">1W–0L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#1b5230,#0d3320);">JH</div>
+            <div><div class="sr-name">Jenny H.</div><div class="sr-sub">2 matches · Righty · Baseline</div></div>
+            <div class="sr-record win">2W–0L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#0d3a7a,#081f3f);">BD</div>
+            <div><div class="sr-name">Beth D.</div><div class="sr-sub">2 matches · Righty · Net Player</div></div>
+            <div class="sr-record loss">0W–2L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#9a3010,#6b1f08);">CM</div>
+            <div><div class="sr-name">Cora M.</div><div class="sr-sub">2 matches · Righty · All-Court</div></div>
+            <div class="sr-record win">1W–1L</div>
+          </div>
+          <div class="scout-row">
+            <div class="sr-avatar" style="background:linear-gradient(135deg,#555,#333);">AV</div>
+            <div><div class="sr-name">Amy V.</div><div class="sr-sub">1 match · Righty · Baseline</div></div>
+            <div class="sr-record loss">0W–1L</div>
+          </div>
+          <div class="dash-add">+ Add New Opponent</div>
+          <div style="height:10px;"></div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+    </div><!-- /phone -->
+  </div><!-- /phone-col -->
+
+
+  <!-- ═══════════════════════════════════════════
+       GOALS PHONE
+  ═══════════════════════════════════════════ -->
+  <div class="phone-col">
+    <div class="screen-label">Goals</div>
+    <div class="state-switcher" id="gSwitcher">
+      <button class="state-btn" onclick="setState('g','empty',this)">Empty</button>
+      <button class="state-btn active" onclick="setState('g','normal',this)">Normal</button>
+      <button class="state-btn" onclick="setState('g','full',this)">Full</button>
+    </div>
+    <div class="phone">
+      <div class="status-bar">
+        <span class="sb-time">9:41</span>
+        <span class="sb-brand">RALLYMIND</span>
+        <span class="sb-icons">🔋</span>
+      </div>
+
+      <!-- GOALS EMPTY -->
+      <div class="demo-screen" id="g-empty">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Goals</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="empty-state">
+          <div class="es-icon">🎯</div>
+          <div class="es-title">No goals yet</div>
+          <div class="es-sub">Set your first tennis goal and RallyMind will track your progress and weave it into your daily pep talks.</div>
+          <button class="es-cta">+ Add First Goal</button>
+          <div class="es-sec">Goals power your AI pep talks</div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+
+      <!-- GOALS NORMAL -->
+      <div class="demo-screen active" id="g-normal">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Goals</div><div class="page-hd-sub">3 active · 2 challenges</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="pills">
+          <div class="pill on">All</div><div class="pill">Technique</div><div class="pill">Strategy</div><div class="pill">Mental</div>
+        </div>
+        <div class="scroll">
+          <div class="sec-hd">Active Goals</div>
+          <div class="goal-card">
+            <div class="gc-top"><div class="gc-title">Backhand topspin consistency</div><span class="tag tag-tech">Technique</span></div>
+            <div class="gc-desc">Roll right wrist through contact. Full follow-through across body.</div>
+            <div class="prog-wrap"><div class="prog-fill" style="width:72%;background:linear-gradient(90deg,var(--g600),var(--g700));"></div></div>
+            <div class="gc-pct">72% · 12 sessions</div>
+          </div>
+          <div class="goal-card">
+            <div class="gc-top"><div class="gc-title">Mental reset after errors</div><span class="tag tag-mental" style="background:var(--gold-bg);color:var(--gold);">Mental</span></div>
+            <div class="gc-desc">Breathe, shake it off, next point only.</div>
+            <div class="prog-wrap"><div class="prog-fill" style="width:55%;background:linear-gradient(90deg,var(--gold),#c09010);"></div></div>
+            <div class="gc-pct" style="color:var(--gold);">55% · 8 sessions</div>
+          </div>
+          <div class="goal-card">
+            <div class="gc-top"><div class="gc-title">Second serve confidence</div><span class="tag tag-strategy">Strategy</span></div>
+            <div class="gc-desc">Commit to a kick serve. No more pushing.</div>
+            <div class="prog-wrap"><div class="prog-fill" style="width:40%;background:linear-gradient(90deg,#5b8dd9,var(--blue));"></div></div>
+            <div class="gc-pct" style="color:var(--blue);">40% · 5 sessions</div>
+          </div>
+          <div class="sec-hd">Challenge Areas</div>
+          <div class="challenge-card">
+            <div class="cc-title">⚡ Short balls — attack too late</div>
+            <div class="cc-ai">🤖 Start split-step earlier. Think "forward first" on any ball inside the service line.</div>
+          </div>
+          <div class="challenge-card">
+            <div class="cc-title">⚡ High backhand volleys</div>
+            <div class="cc-ai">🤖 Take high volleys early, punch down at 45°. Firm wrist, short swing.</div>
+          </div>
+          <div class="dash-add">+ Add New Goal or Challenge</div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+
+      <!-- GOALS FULL -->
+      <div class="demo-screen" id="g-full">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Goals</div><div class="page-hd-sub">5 active · 4 challenges · 6 completed</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="pills">
+          <div class="pill on">All</div><div class="pill">Technique</div><div class="pill">Strategy</div><div class="pill">Mental</div><div class="pill">Fitness</div>
+        </div>
+        <div class="scroll">
+          <!-- Summary strip -->
+          <div class="goal-ring-row">
+            <div class="goal-ring-stat"><div class="goal-ring-num">5</div><div class="goal-ring-lbl">Active</div></div>
+            <div class="goal-ring-divider"></div>
+            <div class="goal-ring-stat"><div class="goal-ring-num">68%</div><div class="goal-ring-lbl">Avg Progress</div></div>
+            <div class="goal-ring-divider"></div>
+            <div class="goal-ring-stat"><div class="goal-ring-num">6</div><div class="goal-ring-lbl">Completed</div></div>
+            <div class="goal-ring-divider"></div>
+            <div class="goal-ring-stat"><div class="goal-ring-num">4</div><div class="goal-ring-lbl">Challenges</div></div>
+          </div>
+
+          <div class="sec-hd-row">
+            <div class="sec-hd-txt">Active Goals</div>
+            <button class="sec-collapse">Hide ▲</button>
+          </div>
+          <div class="goal-card">
+            <div class="gc-top"><div class="gc-title">Backhand topspin consistency</div><span class="tag tag-tech">Technique</span></div>
+            <div class="prog-wrap"><div class="prog-fill" style="width:72%;background:linear-gradient(90deg,var(--g600),var(--g700));"></div></div>
+            <div class="gc-pct">72% · 12 sessions</div>
+          </div>
+          <div class="goal-card">
+            <div class="gc-top"><div class="gc-title">Mental reset after errors</div><span class="tag tag-mental" style="background:var(--gold-bg);color:var(--gold);">Mental</span></div>
+            <div class="prog-wrap"><div class="prog-fill" style="width:55%;background:linear-gradient(90deg,var(--gold),#c09010);"></div></div>
+            <div class="gc-pct" style="color:var(--gold);">55% · 8 sessions</div>
+          </div>
+          <div class="goal-card">
+            <div class="gc-top"><div class="gc-title">Second serve confidence</div><span class="tag tag-strategy">Strategy</span></div>
+            <div class="prog-wrap"><div class="prog-fill" style="width:40%;background:linear-gradient(90deg,#5b8dd9,var(--blue));"></div></div>
+            <div class="gc-pct" style="color:var(--blue);">40% · 5 sessions</div>
+          </div>
+          <div class="goal-card">
+            <div class="gc-top"><div class="gc-title">Net approach footwork</div><span class="tag tag-tech">Technique</span></div>
+            <div class="prog-wrap"><div class="prog-fill" style="width:28%;background:linear-gradient(90deg,var(--g600),var(--g700));"></div></div>
+            <div class="gc-pct">28% · 3 sessions</div>
+          </div>
+          <div class="goal-card">
+            <div class="gc-top"><div class="gc-title">On-court endurance</div><span class="tag" style="background:var(--purple-bg);color:var(--purple);">Fitness</span></div>
+            <div class="prog-wrap"><div class="prog-fill" style="width:60%;background:linear-gradient(90deg,var(--purple),#4a0e70);"></div></div>
+            <div class="gc-pct" style="color:var(--purple);">60% · 9 sessions</div>
+          </div>
+
+          <div class="sec-hd-row">
+            <div class="sec-hd-txt">Challenge Areas</div>
+            <button class="sec-collapse">Hide ▲</button>
+          </div>
+          <div class="challenge-card">
+            <div class="cc-title">⚡ Short balls — attack too late</div>
+            <div class="cc-ai">🤖 Start split-step earlier inside the service line.</div>
+          </div>
+          <div class="challenge-card">
+            <div class="cc-title">⚡ High backhand volleys</div>
+            <div class="cc-ai">🤖 Take early, punch down at 45°. Short compact swing.</div>
+          </div>
+          <div class="challenge-card">
+            <div class="cc-title">⚡ Returning wide slice serves</div>
+            <div class="cc-ai">🤖 Read the toss early. Step out and drive cross-court.</div>
+          </div>
+          <div class="challenge-card">
+            <div class="cc-title">⚡ Closing out tight sets</div>
+            <div class="cc-ai">🤖 Slow down. One point at a time. Trust your serve.</div>
+          </div>
+
+          <div class="sec-hd-row">
+            <div class="sec-hd-txt">Completed ✓</div>
+            <button class="sec-collapse">Show ▼</button>
+          </div>
+          <div class="completed-goal"><div class="cg-check">✓</div><div class="cg-title">Consistent serve toss</div><div class="cg-date">Jan '26</div></div>
+          <div class="completed-goal"><div class="cg-check">✓</div><div class="cg-title">Cross-court forehand under pressure</div><div class="cg-date">Dec '25</div></div>
+          <div class="completed-goal"><div class="cg-check">✓</div><div class="cg-title">Net poaching timing</div><div class="cg-date">Nov '25</div></div>
+          <div class="completed-goal"><div class="cg-check">✓</div><div class="cg-title">Breathing between points</div><div class="cg-date">Oct '25</div></div>
+          <div class="completed-goal"><div class="cg-check">✓</div><div class="cg-title">Overhead positioning</div><div class="cg-date">Sep '25</div></div>
+          <div class="completed-goal"><div class="cg-check">✓</div><div class="cg-title">Backhand slice approach</div><div class="cg-date">Aug '25</div></div>
+          <div style="height:10px;"></div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+    </div><!-- /phone -->
+  </div><!-- /phone-col -->
+
+
+  <!-- ═══════════════════════════════════════════
+       GEAR PHONE
+  ═══════════════════════════════════════════ -->
+  <div class="phone-col">
+    <div class="screen-label">Gear</div>
+    <div class="state-switcher" id="grSwitcher">
+      <button class="state-btn" onclick="setState('gr','empty',this)">Empty</button>
+      <button class="state-btn active" onclick="setState('gr','normal',this)">Normal</button>
+      <button class="state-btn" onclick="setState('gr','full',this)">Full</button>
+    </div>
+    <div class="phone">
+      <div class="status-bar">
+        <span class="sb-time">9:41</span>
+        <span class="sb-brand">RALLYMIND</span>
+        <span class="sb-icons">🔋</span>
+      </div>
+
+      <!-- GEAR EMPTY -->
+      <div class="demo-screen" id="gr-empty">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Gear</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="empty-state">
+          <div class="es-icon">🎾</div>
+          <div class="es-title">No gear added yet</div>
+          <div class="es-sub">Track your rackets, shoes, and accessories. Know your string tension, grip size, and when gear needs replacing.</div>
+          <button class="es-cta">+ Add Your First Racket</button>
+          <div class="es-sec">Rackets · Shoes · Accessories</div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+
+      <!-- GEAR NORMAL -->
+      <div class="demo-screen active" id="gr-normal">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Gear</div><div class="page-hd-sub">2 rackets · 1 shoe · 2 accessories</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="scroll">
+          <div class="sec-hd">Rackets</div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--g100);">🎾</div>
+            <div style="flex:1;">
+              <div class="gear-name">Wilson Ultra 100 V4 ★</div>
+              <div class="gear-sub">Main · Dec 2022</div>
+              <div class="gear-specs"><span class="spec main">Main</span><span class="spec hi">52 lbs</span><span class="spec">Grip 4¼</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--surface);">🎾</div>
+            <div style="flex:1;">
+              <div class="gear-name">Wilson Ultra 100 V4</div>
+              <div class="gear-sub">Backup · Apr 2023</div>
+              <div class="gear-specs"><span class="spec">Backup</span><span class="spec hi">52 lbs</span><span class="spec">Butterfly</span></div>
+            </div>
+          </div>
+          <div class="dash-add">+ Add Racket</div>
+          <div class="sec-hd">Shoes</div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--orange-bg);">👟</div>
+            <div style="flex:1;">
+              <div class="gear-name">Asics Solution Speed FF3</div>
+              <div class="gear-sub">Clay · Feb 2026</div>
+              <div class="gear-specs"><span class="spec">Size 7.5</span><span class="spec" style="background:var(--orange-bg);color:var(--orange);">Breaking in</span></div>
+            </div>
+          </div>
+          <div class="dash-add">+ Add Shoes</div>
+          <div class="sec-hd">Accessories</div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--gold-bg);">🎽</div>
+            <div style="flex:1;">
+              <div class="gear-name">Adidas Match Wristbands</div>
+              <div class="gear-sub">Accessories · Jan 2026</div>
+              <div class="gear-specs"><span class="spec">Pair</span><span class="spec">Sweat-wicking</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--blue-bg);">🎒</div>
+            <div style="flex:1;">
+              <div class="gear-name">Wilson Tour Backpack</div>
+              <div class="gear-sub">Bag · Mar 2025</div>
+              <div class="gear-specs"><span class="spec">3 rackets</span><span class="spec hi">Daily use</span></div>
+            </div>
+          </div>
+          <div class="dash-add">+ Add Accessory</div>
+          <div style="height:10px;"></div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+
+      <!-- GEAR FULL -->
+      <div class="demo-screen" id="gr-full">
+        <div class="page-hd">
+          <div class="page-hd-row">
+            <div><div class="page-hd-title">Gear</div><div class="page-hd-sub">4 rackets · 3 shoes · 6 accessories</div></div>
+            <button class="fab">+</button>
+          </div>
+        </div>
+        <div class="scroll">
+          <div class="sec-hd">Rackets</div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--g100);">🎾</div>
+            <div style="flex:1;">
+              <div class="gear-name">Wilson Ultra 100 V4 ★</div>
+              <div class="gear-sub">Main · Dec 2022</div>
+              <div class="gear-specs"><span class="spec main">Main</span><span class="spec hi">52 lbs</span><span class="spec">Grip 4¼</span><span class="spec">No dampener</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--surface);">🎾</div>
+            <div style="flex:1;">
+              <div class="gear-name">Wilson Ultra 100 V4</div>
+              <div class="gear-sub">Backup · Apr 2023</div>
+              <div class="gear-specs"><span class="spec">Backup</span><span class="spec hi">52 lbs</span><span class="spec">Grip 4¼</span><span class="spec">Butterfly</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--blue-bg);">🎾</div>
+            <div style="flex:1;">
+              <div class="gear-name">Babolat Pure Aero 2023</div>
+              <div class="gear-sub">Practice · Aug 2023</div>
+              <div class="gear-specs"><span class="spec">Practice</span><span class="spec hi">55 lbs</span><span class="spec">Grip 4⅛</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--orange-bg);">🎾</div>
+            <div style="flex:1;">
+              <div class="gear-name">Head Speed MP 2024</div>
+              <div class="gear-sub">Demo / Try · Feb 2024</div>
+              <div class="gear-specs"><span class="spec">Demo</span><span class="spec hi">53 lbs</span><span class="spec">Grip 4¼</span></div>
+            </div>
+          </div>
+          <div class="dash-add">+ Add Racket</div>
+
+          <div class="sec-hd">Shoes</div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--orange-bg);">👟</div>
+            <div style="flex:1;">
+              <div class="gear-name">Asics Solution Speed FF3</div>
+              <div class="gear-sub">Clay · Feb 2026</div>
+              <div class="gear-specs"><span class="spec">7.5</span><span class="spec" style="background:var(--orange-bg);color:var(--orange);">Breaking in</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--g100);">👟</div>
+            <div style="flex:1;">
+              <div class="gear-name">Nike Air Zoom Vapor Pro 2</div>
+              <div class="gear-sub">Hard Court · Oct 2025</div>
+              <div class="gear-specs"><span class="spec">7.5</span><span class="spec main">Match ready</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--surface);">👟</div>
+            <div style="flex:1;">
+              <div class="gear-name">Adidas Adizero Ubersonic 4</div>
+              <div class="gear-sub">Hard Court · Jun 2024</div>
+              <div class="gear-specs"><span class="spec">7.5</span><span class="spec" style="color:var(--orange);background:var(--orange-bg);">Worn</span></div>
+            </div>
+          </div>
+          <div class="dash-add">+ Add Shoes</div>
+
+          <div class="sec-hd">Accessories</div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--gold-bg);">🎽</div>
+            <div style="flex:1;">
+              <div class="gear-name">Adidas Match Wristbands</div>
+              <div class="gear-sub">Wristband · Jan 2026</div>
+              <div class="gear-specs"><span class="spec">Pair</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--blue-bg);">🎒</div>
+            <div style="flex:1;">
+              <div class="gear-name">Wilson Tour Backpack</div>
+              <div class="gear-sub">Bag · Mar 2025</div>
+              <div class="gear-specs"><span class="spec">3 rackets</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--purple-bg);">🩳</div>
+            <div style="flex:1;">
+              <div class="gear-name">Nike Dri-FIT Tennis Shorts</div>
+              <div class="gear-sub">Apparel · Mar 2025</div>
+              <div class="gear-specs"><span class="spec">Size S</span><span class="spec">White</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--g100);">🎀</div>
+            <div style="flex:1;">
+              <div class="gear-name">Tourna Grip XL</div>
+              <div class="gear-sub">Overgrip · Jan 2026</div>
+              <div class="gear-specs"><span class="spec">30-pack</span><span class="spec hi">In use</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--red-bg);">🏋️</div>
+            <div style="flex:1;">
+              <div class="gear-name">Resistance Bands Set</div>
+              <div class="gear-sub">Training Aid · Oct 2025</div>
+              <div class="gear-specs"><span class="spec">5 levels</span></div>
+            </div>
+          </div>
+          <div class="gear-card">
+            <div class="gear-ico-wrap" style="background:var(--orange-bg);">🎩</div>
+            <div style="flex:1;">
+              <div class="gear-name">Lululemon Tennis Hat</div>
+              <div class="gear-sub">Hat · Jul 2025</div>
+              <div class="gear-specs"><span class="spec">White</span><span class="spec">UPF 50+</span></div>
+            </div>
+          </div>
+          <div class="dash-add">+ Add Accessory</div>
+          <div style="height:10px;"></div>
+        </div>
+        <nav class="nav">
+          <button class="nav-btn"><div class="nav-ico">🏠</div><div class="nav-lbl">Home</div></button>
+          <button class="nav-btn"><div class="nav-ico">📓</div><div class="nav-lbl">Journal</div></button>
+          <button class="nav-btn"><div class="nav-ico">🕵️</div><div class="nav-lbl">Scout</div></button>
+          <button class="nav-btn"><div class="nav-ico">🎯</div><div class="nav-lbl">Goals</div></button>
+          <button class="nav-btn active"><div class="nav-ico">🎾</div><div class="nav-lbl">Gear</div></button>
+        </nav>
+      </div>
+    </div><!-- /phone -->
+  </div><!-- /phone-col -->
+
+</div><!-- /demo-row -->
+
+<script>
+function setState(prefix, state, btn) {
+  // Deactivate all screens for this prefix
+  ['empty','normal','full'].forEach(s => {
+    const el = document.getElementById(prefix + '-' + s);
+    if (el) el.classList.remove('active');
+  });
+  // Activate target
+  const target = document.getElementById(prefix + '-' + state);
+  if (target) target.classList.add('active');
+  // Update switcher buttons
+  btn.closest('.state-switcher').querySelectorAll('.state-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  // Show/hide density toggle for journal full state
+  if (prefix === 'j') {
+    const dr = document.getElementById('jDensityRow');
+    if (dr) dr.style.display = state === 'full' ? 'flex' : 'none';
+    // Reset to card view on state change
+    if (state === 'full') {
+      document.getElementById('j-full-card').style.display = 'block';
+      document.getElementById('j-full-compact').style.display = 'none';
+      document.getElementById('jDensity-mid').classList.add('active');
+      document.getElementById('jDensity-compact').classList.remove('active');
+    }
+  }
+}
+
+function setDensity(mode, btn) {
+  const card = document.getElementById('j-full-card');
+  const compact = document.getElementById('j-full-compact');
+  if (mode === 'mid') {
+    card.style.display = 'block';
+    compact.style.display = 'none';
+  } else {
+    card.style.display = 'none';
+    compact.style.display = 'block';
+    compact.style.flex = '1';
+    compact.style.overflowY = 'auto';
+  }
+  btn.closest('.density-row').querySelectorAll('.density-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
