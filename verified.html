@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verified — RallyMind</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark:  #0d3320;
+      --green-mid:   #1b5230;
+      --green:       #2a7a4b;
+      --green-light: #e8f5ee;
+      --gold:        #e6a817;
+      --gold-light:  #fff8e1;
+      --navy:        #1b2d45;
+      --surface:     #f5f7fa;
+      --white:       #ffffff;
+      --gray:        #7a8fa6;
+      --divider:     #e4eaf0;
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--green-dark);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── Background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(42,122,75,0.55) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 90% 100%, rgba(230,168,23,0.12) 0%, transparent 60%),
+        linear-gradient(160deg, #0d3320 0%, #1b2d45 100%);
+      z-index: 0;
+    }
+
+    /* Court line texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 28px;
+      padding: 52px 44px 44px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow:
+        0 32px 80px rgba(0,0,0,0.45),
+        0 0 0 1px rgba(42,122,75,0.15) inset,
+        0 1px 0 rgba(255,255,255,0.08) inset;
+      animation: cardIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(32px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ── Logo mark ── */
+    .logomark {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 28px;
+      animation: logoIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+    }
+
+    @keyframes logoIn {
+      from { opacity: 0; transform: scale(0.7) rotate(-10deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    /* ── Success ring ── */
+    .success-ring {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 28px;
+      position: relative;
+      animation: ringIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+    }
+
+    @keyframes ringIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    .success-ring svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .checkmark-path {
+      stroke-dasharray: 60;
+      stroke-dashoffset: 60;
+      animation: drawCheck 0.5s ease 0.5s forwards;
+    }
+
+    .circle-path {
+      stroke-dasharray: 220;
+      stroke-dashoffset: 220;
+      animation: drawCircle 0.6s ease 0.2s forwards;
+    }
+
+    @keyframes drawCircle {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes drawCheck {
+      to { stroke-dashoffset: 0; }
+    }
+
+    /* ── App name ── */
+    .app-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 16px;
+      animation: fadeUp 0.5s ease 0.4s both;
+    }
+
+    /* ── Headline ── */
+    .headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 16px;
+      animation: fadeUp 0.5s ease 0.5s both;
+    }
+
+    .headline span {
+      color: var(--gold);
+    }
+
+    /* ── Body text ── */
+    .body-text {
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      animation: fadeUp 0.5s ease 0.6s both;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+      margin: 0 auto 32px;
+      animation: fadeUp 0.5s ease 0.65s both;
+    }
+
+    /* ── Return button ── */
+    .return-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 16px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      box-shadow:
+        0 8px 24px rgba(42,122,75,0.4),
+        0 1px 0 rgba(255,255,255,0.1) inset;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      animation: fadeUp 0.5s ease 0.7s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .return-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: rgba(255,255,255,0.15);
+      transform: skewX(-20deg);
+      animation: shimmer 3s ease 1.2s infinite;
+    }
+
+    @keyframes shimmer {
+      0%   { left: -60%; opacity: 0; }
+      10%  { opacity: 1; }
+      40%  { left: 120%; opacity: 0; }
+      100% { left: 120%; opacity: 0; }
+    }
+
+    .return-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(42,122,75,0.5), 0 1px 0 rgba(255,255,255,0.1) inset;
+    }
+
+    .return-btn:active {
+      transform: translateY(0);
+    }
+
+    /* ── Footer note ── */
+    .footer-note {
+      margin-top: 28px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      line-height: 1.6;
+      animation: fadeUp 0.5s ease 0.8s both;
+    }
+
+    /* ── Confetti particles ── */
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    /* ── Bottom brand ── */
+    .brand-footer {
+      margin-top: 40px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-family: 'DM Sans', sans-serif;
+      animation: fadeUp 0.5s ease 0.9s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .card { padding: 40px 28px 36px; border-radius: 20px; }
+      .headline { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Confetti particles -->
+  <div class="particles" id="particles"></div>
+
+  <div class="page">
+
+    <div class="card">
+
+      <!-- Animated checkmark -->
+      <div class="success-ring">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer glow ring -->
+          <circle cx="40" cy="40" r="36" fill="rgba(42,122,75,0.12)"/>
+          <!-- Animated circle -->
+          <circle class="circle-path" cx="40" cy="40" r="30"
+            stroke="#2a7a4b" stroke-width="2.5"
+            stroke-linecap="round"
+            transform="rotate(-90 40 40)"/>
+          <!-- Animated checkmark -->
+          <polyline class="checkmark-path"
+            points="24,41 35,52 56,30"
+            stroke="#e6a817" stroke-width="3.5"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <p class="app-name">RallyMind</p>
+
+      <h1 class="headline">You're <span>verified</span>!</h1>
+
+      <p class="body-text">
+        Your email address has been confirmed and your RallyMind account is ready to go.
+      </p>
+
+      <div class="divider"></div>
+
+      <a href="#" class="return-btn" onclick="handleReturn(event)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)" stroke="none"/>
+          <path d="M8 12l3 3 5-5"/>
+        </svg>
+        Return to RallyMind
+      </a>
+
+      <p class="footer-note">
+        Open the RallyMind app on your device to sign in.<br>
+        If you didn't create this account, you can safely ignore this page.
+      </p>
+
+    </div>
+
+    <p class="brand-footer">🎾 &nbsp; RallyMind &nbsp; · &nbsp; Play Smarter</p>
+
+  </div>
+
+  <script>
+    // ── Confetti burst on load ──────────────────────────────────────────────
+    const colors = ['#2a7a4b','#e6a817','#ffffff','#1b5230','#d4e84a'];
+
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const count = 40;
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size  = Math.random() * 8 + 4;
+        const startX = Math.random() * 100;
+        const delay  = Math.random() * 0.6 + 0.4;
+        const dur    = Math.random() * 1.5 + 1.5;
+        const endX   = (Math.random() - 0.5) * 300;
+        const endY   = Math.random() * -400 - 100;
+
+        p.style.cssText = `
+          left: ${startX}%;
+          top: 60%;
+          width: ${size}px;
+          height: ${size}px;
+          background: ${color};
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+          animation: particle-${i} ${dur}s ease ${delay}s forwards;
+        `;
+
+        const keyframes = `
+          @keyframes particle-${i} {
+            0%   { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0); }
+            15%  { opacity: 1; transform: translate(${endX * 0.1}px, ${endY * 0.1}px) rotate(${Math.random()*180}deg) scale(1); }
+            100% { opacity: 0; transform: translate(${endX}px, ${endY}px) rotate(${Math.random()*720}deg) scale(0.3); }
+          }
+        `;
+
+        const style = document.createElement('style');
+        style.textContent = keyframes;
+        document.head.appendChild(style);
+        container.appendChild(p);
+      }
+    }
+
+    // ── Deep link handler ──────────────────────────────────────────────────
+    function handleReturn(e) {
+      e.preventDefault();
+      // Try to open the app via deep link
+      window.location.href = 'rallymind://';
+      // Fallback after 1.5s — nothing happens if app opened
+      setTimeout(() => {
+        // App didn't open — show helpful message
+        const btn = document.querySelector('.return-btn');
+        btn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(255,255,255,0.15)" stroke="none"/>
+            <path d="M12 8v4m0 4h.01"/>
+          </svg>
+          Open RallyMind on your device
+        `;
+        btn.style.background = 'rgba(255,255,255,0.08)';
+        btn.style.boxShadow = 'none';
+      }, 1500);
+    }
+
+    // ── Init ───────────────────────────────────────────────────────────────
+    window.addEventListener('load', () => {
+      setTimeout(createParticles, 600);
+    });
+  </script>
+
+</body>
+</html>
