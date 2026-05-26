@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Untitled Document.md</title>
+  <style>
+  @import url("https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha2/katex.min.css");
+
+  body {
+    font-family: Georgia, Cambria, serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #373D49;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+  h1 { font-size: 2em; }
+  h2 { font-size: 1.5em; }
+  h3 { font-size: 1.25em; }
+  a { color: #35D7BB; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    font-family: "Ubuntu Mono", Monaco, monospace;
+    background: #F5F7FA;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+  }
+  pre {
+    background: #F5F7FA;
+    padding: 1em;
+    border-radius: 3px;
+    overflow-x: auto;
+  }
+  .hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 0;
+    color: #333;
+  }
+  pre code { background: none; padding: 0; }
+  blockquote {
+    border-left: 3px solid #A0AABF;
+    padding-left: 1em;
+    margin-left: 0;
+    font-style: italic;
+    color: #666;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid #E8E8E8;
+    padding: 0.5em;
+    text-align: left;
+  }
+  th {
+    background: #F5F7FA;
+    font-weight: 600;
+  }
+  #preview .table {
+    width: auto;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  .katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+</style>
+</head>
+<body id="preview">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Untitled Document.md</title>
+    <style>
+    :root {
+      --green:   #2a7a4b;
+      --gold:    #b8860b;
+      --navy:    #1b2d45;
+      --text-lt: #7a8fa6;
+      --surface: #f5f7fa;
+      --divider: #e4eaf0;
+      --red:     #c62828;
+    }
+<pre class="has-line-data" data-line-start="18" data-line-end="165"><code>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--navy);
+  background: var(--surface);
+}
+
+header {
+  background: var(--navy);
+  padding: 28px 24px;
+  text-align: center;
+}
+
+header .logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+header .logo span {
+  color: var(--green);
+}
+
+header .tagline {
+  font-size: 13px;
+  color: var(--text-lt);
+  margin-top: 4px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.effective-date {
+  font-size: 14px;
+  color: var(--text-lt);
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--divider);
+}
+
+h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-top: 36px;
+  margin-bottom: 10px;
+  padding-left: 12px;
+  border-left: 3px solid var(--green);
+}
+
+p {
+  color: #3a4d60;
+  margin-bottom: 14px;
+  font-size: 15px;
+}
+
+ul {
+  margin: 10px 0 14px 20px;
+  color: #3a4d60;
+  font-size: 15px;
+}
+
+ul li {
+  margin-bottom: 6px;
+}
+
+.highlight-box {
+  background: #ffffff;
+  border: 1px solid var(--divider);
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 24px 0;
+  font-size: 15px;
+  color: var(--navy);
+}
+
+.highlight-box strong {
+  display: block;
+  margin-bottom: 4px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+a {
+  color: var(--green);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.contact-block {
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-top: 40px;
+  color: #ffffff;
+}
+
+.contact-block h2 {
+  color: #ffffff;
+  border-left-color: var(--green);
+  margin-top: 0;
+  font-size: 16px;
+}
+
+.contact-block p {
+  color: #c8d4e0;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.contact-block a {
+  color: #7ecfa0;
+}
+
+footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 13px;
+  color: var(--text-lt);
+  border-top: 1px solid var(--divider);
+}
+</code></pre>
+  </style>
+</head>
+<body id="preview">
+<h1 class="code-line has-line-data" data-line-start="0" data-line-end="1"><a id="Terms_of_Use_0"></a>Terms of Use</h1>
+<p class="has-line-data" data-line-start="2" data-line-end="5"><strong>RallyEdge</strong><br>
+Effective Date: May 20, 2026<br>
+Last Updated: May 20, 2026</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="8" data-line-end="9"><a id="1_Acceptance_of_Terms_8"></a>1. Acceptance of Terms</h2>
+<p class="has-line-data" data-line-start="10" data-line-end="11">By downloading, installing, or using RallyEdge (“the App”), you agree to be bound by these Terms of Use (“Terms”). If you do not agree to these Terms, do not use the App. These Terms constitute a binding agreement between you and RKS Collective LLC (“we,” “us,” or “our”), a Florida limited liability company.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="14" data-line-end="15"><a id="2_Eligibility_14"></a>2. Eligibility</h2>
+<p class="has-line-data" data-line-start="16" data-line-end="17">You must be at least 13 years of age to use RallyEdge. By using the App, you represent and warrant that you meet this age requirement. If you are under 18, you represent that a parent or legal guardian has reviewed and agreed to these Terms on your behalf.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="20" data-line-end="21"><a id="3_Description_of_the_App_20"></a>3. Description of the App</h2>
+<p class="has-line-data" data-line-start="22" data-line-end="23">RallyEdge is a racket sport performance app that allows users to log match sessions, track opponents, set and monitor improvement goals, manage gear, and receive AI-generated coaching content including pep talks, game plans, and goal tips. Features vary by subscription tier.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="26" data-line-end="27"><a id="4_Account_Registration_26"></a>4. Account Registration</h2>
+<p class="has-line-data" data-line-start="28" data-line-end="29">To use RallyEdge, you must create an account using a valid email address and password. You are responsible for maintaining the confidentiality of your login credentials and for all activity that occurs under your account. You agree to notify us immediately at <a href="mailto:rallyedgeapp@gmail.com">rallyedgeapp@gmail.com</a> if you suspect any unauthorized use of your account. We are not liable for any loss or damage arising from your failure to protect your credentials.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="32" data-line-end="33"><a id="5_Subscriptions_and_Billing_32"></a>5. Subscriptions and Billing</h2>
+<p class="has-line-data" data-line-start="34" data-line-end="35">RallyEdge offers a free tier and a paid subscription tier. Subscription pricing and features are displayed within the App at the time of purchase.</p>
+<ul>
+<li class="has-line-data" data-line-start="36" data-line-end="37">Subscriptions are billed through Apple’s App Store and are subject to Apple’s payment terms</li>
+<li class="has-line-data" data-line-start="37" data-line-end="38">Subscriptions automatically renew at the end of each billing period unless cancelled at least 24 hours before the renewal date</li>
+<li class="has-line-data" data-line-start="38" data-line-end="39">You can manage and cancel your subscription at any time through your Apple ID account settings</li>
+<li class="has-line-data" data-line-start="39" data-line-end="40">We do not process payments directly and cannot issue refunds — all billing inquiries must be directed to Apple</li>
+<li class="has-line-data" data-line-start="40" data-line-end="42">Prices are displayed in the App and may change with notice</li>
+</ul>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="44" data-line-end="45"><a id="6_AIGenerated_Content_44"></a>6. AI-Generated Content</h2>
+<p class="has-line-data" data-line-start="46" data-line-end="47">RallyEdge uses artificial intelligence to generate personalized coaching content including pep talks, game plans, and goal tips. By using these features, you acknowledge and agree that:</p>
+<ul>
+<li class="has-line-data" data-line-start="48" data-line-end="49">AI-generated content is provided for motivational and informational purposes only</li>
+<li class="has-line-data" data-line-start="49" data-line-end="50">We make no guarantees about the accuracy, completeness, or effectiveness of any AI-generated content</li>
+<li class="has-line-data" data-line-start="50" data-line-end="51">AI-generated content does not constitute professional coaching, athletic training, or sports psychology advice</li>
+<li class="has-line-data" data-line-start="51" data-line-end="52">Results may vary and are not guaranteed</li>
+<li class="has-line-data" data-line-start="52" data-line-end="54">You use AI-generated content at your own discretion and risk</li>
+</ul>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="56" data-line-end="57"><a id="7_UserGenerated_Content_56"></a>7. User-Generated Content</h2>
+<p class="has-line-data" data-line-start="58" data-line-end="59">RallyEdge allows you to enter personal data including match results, opponent information, goals, and other content (“User Content”). You retain full ownership of all User Content you enter into the App. We do not claim any ownership rights over your User Content.</p>
+<p class="has-line-data" data-line-start="60" data-line-end="61">You are solely responsible for the accuracy and legality of any User Content you enter. User Content is private to your account and is not visible to other users.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="64" data-line-end="65"><a id="8_Acceptable_Use_64"></a>8. Acceptable Use</h2>
+<p class="has-line-data" data-line-start="66" data-line-end="67">You agree not to use RallyEdge to:</p>
+<ul>
+<li class="has-line-data" data-line-start="68" data-line-end="69">Violate any applicable law or regulation</li>
+<li class="has-line-data" data-line-start="69" data-line-end="70">Attempt to gain unauthorized access to any part of the App or its infrastructure</li>
+<li class="has-line-data" data-line-start="70" data-line-end="71">Reverse engineer, decompile, or disassemble any part of the App</li>
+<li class="has-line-data" data-line-start="71" data-line-end="72">Use the App in any manner that could damage, disable, or impair its functionality</li>
+<li class="has-line-data" data-line-start="72" data-line-end="74">Attempt to circumvent any subscription or feature restriction</li>
+</ul>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="76" data-line-end="77"><a id="9_Intellectual_Property_76"></a>9. Intellectual Property</h2>
+<p class="has-line-data" data-line-start="78" data-line-end="79">RallyEdge and all content, features, and functionality of the App — including but not limited to text, graphics, logos, and software — are owned by RKS Collective LLC and are protected by applicable intellectual property laws. You are granted a limited, non-exclusive, non-transferable license to use the App for personal, non-commercial purposes in accordance with these Terms. No other rights are granted.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="82" data-line-end="83"><a id="10_Privacy_82"></a>10. Privacy</h2>
+<p class="has-line-data" data-line-start="84" data-line-end="85">Your use of RallyEdge is also governed by our Privacy Policy, available at the link provided within the App. By using the App, you consent to the data practices described in our Privacy Policy.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="88" data-line-end="89"><a id="11_Disclaimer_of_Warranties_88"></a>11. Disclaimer of Warranties</h2>
+<p class="has-line-data" data-line-start="90" data-line-end="91">THE APP IS PROVIDED “AS IS” AND “AS AVAILABLE” WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. TO THE FULLEST EXTENT PERMITTED BY LAW, RKS COLLECTIVE LLC DISCLAIMS ALL WARRANTIES INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE APP WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="94" data-line-end="95"><a id="12_Limitation_of_Liability_94"></a>12. Limitation of Liability</h2>
+<p class="has-line-data" data-line-start="96" data-line-end="97">TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, RKS COLLECTIVE LLC SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATED TO YOUR USE OF THE APP, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. OUR TOTAL LIABILITY TO YOU FOR ANY CLAIM ARISING OUT OF OR RELATED TO THESE TERMS OR THE APP SHALL NOT EXCEED THE AMOUNT YOU PAID TO US IN THE TWELVE MONTHS PRECEDING THE CLAIM.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="100" data-line-end="101"><a id="13_Dispute_Resolution_100"></a>13. Dispute Resolution</h2>
+<p class="has-line-data" data-line-start="102" data-line-end="103">If you have a dispute with us, we ask that you first contact us at <a href="mailto:rallyedgeapp@gmail.com">rallyedgeapp@gmail.com</a> and give us a reasonable opportunity to resolve the issue informally before pursuing any formal legal action. We will attempt to resolve disputes in good faith within 30 days of receiving written notice.</p>
+<p class="has-line-data" data-line-start="104" data-line-end="105">If informal resolution is unsuccessful, any dispute arising out of or relating to these Terms or the App shall be governed by and construed in accordance with the laws of the State of Florida, without regard to its conflict of law provisions. You agree to submit to the exclusive jurisdiction of the state and federal courts located in Florida for the resolution of any such dispute.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="108" data-line-end="109"><a id="14_Account_Deletion_108"></a>14. Account Deletion</h2>
+<p class="has-line-data" data-line-start="110" data-line-end="111">You may delete your account at any time from within the App under Menu → Account → Delete Account. Deleting your account will permanently remove all your data from our systems. This action cannot be undone. If you have an active paid subscription, you must cancel it through your Apple ID account settings before or after deleting your account — deleting your account does not automatically cancel your Apple subscription.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="114" data-line-end="115"><a id="15_Termination_114"></a>15. Termination</h2>
+<p class="has-line-data" data-line-start="116" data-line-end="117">We reserve the right to suspend or terminate your account at our sole discretion if you violate these Terms or engage in conduct we determine to be harmful to other users or to the App. Upon termination, your right to use the App ceases immediately.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="120" data-line-end="121"><a id="16_Changes_to_These_Terms_120"></a>16. Changes to These Terms</h2>
+<p class="has-line-data" data-line-start="122" data-line-end="123">We may update these Terms from time to time. When we do, we will update the “Last Updated” date at the top of this document. Your continued use of the App after any changes constitutes your acceptance of the updated Terms. We encourage you to review these Terms periodically.</p>
+<hr>
+<h2 class="code-line has-line-data" data-line-start="126" data-line-end="127"><a id="17_Contact_126"></a>17. Contact</h2>
+<p class="has-line-data" data-line-start="128" data-line-end="129">If you have any questions about these Terms, please contact us at:</p>
+<p class="has-line-data" data-line-start="130" data-line-end="132">RKS Collective LLC<br>
+<a href="mailto:rallyedgeapp@gmail.com">rallyedgeapp@gmail.com</a></p>
+<hr>
+<p class="has-line-data" data-line-start="135" data-line-end="136"><em>RallyEdge is a product of RKS Collective LLC. All rights reserved.</em></p>
+</body>
+</html>
+</body>
+</html>
